@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enviar Selección a GitHub</title>
+</head>
+<body>
+    <h1>Selecciona tus opciones</h1>
+
+    <form id="formulario">
+        <label>
+            <input type="checkbox" id="opcion1" name="opciones" value="Opción 1"> Opción 1
+        </label><br>
+
+        <label>
+            <input type="checkbox" id="opcion2" name="opciones" value="Opción 2"> Opción 2
+        </label><br>
+
+        <label>
+            <input type="checkbox" id="opcion3" name="opciones" value="Opción 3"> Opción 3
+        </label><br>
+
+        <label>
+            <input type="checkbox" id="opcion4" name="opciones" value="Opción 4"> Opción 4
+        </label><br><br>
+
+        <button type="submit">Enviar a GitHub</button>
+    </form>
+
+    <script>
+        // Manejar el envío del formulario
+        document.getElementById("formulario").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            // Obtener las opciones seleccionadas
+            const opcionesSeleccionadas = [];
+            const checkboxes = document.querySelectorAll('input[name="opciones"]:checked');
+            checkboxes.forEach(function(checkbox) {
+                opcionesSeleccionadas.push(checkbox.value);
+            });
+
+            // Si no hay opciones seleccionadas
+            if (opcionesSeleccionadas.length === 0) {
+                alert("Por favor, selecciona al menos una opción.");
+                return;
+            }
+
+            // Crear el objeto de datos para enviar a GitHub
+            const data = {
+                "message": "Actualizar selección de opciones",
+                "content": btoa(JSON.stringify(opcionesSeleccionadas)), // Codificar a base64
+                "branch": "main" // Rama en GitHub (ajustar si es necesario)
+            };
+
+            // Enviar a GitHub
+            fetch("https://api.github.com/repos/usuario/tu-repositorio/contents/seleccion.json", {
+                method: "PUT",
+                headers: {
+                    "Authorization": "Bearer GitHub_pat_11BIOFG3I0shEX0XGYgVc4_wa375Y6F4UUKXWoitpdZ6MXUY0iwIF0T1liOdVrhJkjZJTABJVPg3nmQ6qV",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Datos enviados a GitHub:", data);
+                alert("Datos enviados con éxito a GitHub.");
+            })
+            .catch(error => {
+                console.error("Error al enviar los datos:", error);
+            });
+        });
+    </script>
+</body>
+</html>
