@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Asistencia</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <h1>Lista de Asistencia</h1>
+  <form id="asistenciaForm">
+    <label><input type="checkbox" name="asistencia" value="Ismar"> Persona 1</label><br>
+    <label><input type="checkbox" name="asistencia" value="Beta"> Persona 2</label><br>
+    <label><input type="checkbox" name="asistencia" value="Juanca"> Persona 3</label><br><br>
+    <button type="button" onclick="generarPDF()">Generar y Subir PDF</button>
+  </form>
+
+  <script>
+    async function generarPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      // Recoger datos del formulario
+      let asistencias = document.querySelectorAll('input[name="asistencia"]:checked');
+      let lista = [];
+      asistencias.forEach((check) => {
+        lista.push(check.value);
+      });
+
+      // Agregar datos al PDF
+      doc.text("Lista de Asistencia", 10, 10);
+      lista.forEach((nombre, i) => {
+        doc.text(`${i + 1}. ${nombre}`, 10, 20 + i * 10);
+      });
+
+      // Generar PDF en formato base64
+      const pdfBase64 = btoa(doc.output());
+
+      // Subir el PDF a GitHub
+      const token = "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"; // Token de prueba (revocar después de probar)
+      const repo = "TU_USUARIO/TU_REPOSITORIO"; // Reemplaza con tu usuario y repositorio
+      const filePath = `asistencias/asistencia_${Date.now()}.pdf`;
+
+      const response = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
+        method: "PUT",
+        headers: {
+          "Authorization": `token ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          message: "Subir nuevo archivo de asistencia",
+          content: pdfBase64
+        })
+      });
+
+      if (response.ok) {
+        alert("PDF subido correctamente a GitHub");
+        const data = await response.json();
+        window.open(data.content.download_url, '_blank');
+      } else {
+        alert("Error al subir el PDF");
+      }
+    }
+  </script>
+</body>
+</html>
