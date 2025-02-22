@@ -54,7 +54,8 @@
             };
 
             // Enviar a GitHub
-            fetch("https://api.github.com/repos/usuario/tu-repositorio/contents/seleccion.json", {
+            fetch("https://api.github.com/repos/dmartinez25252525/asistencia1-html/contents/Chejo-Prueba%202.json
+", {
                 method: "PUT",
                 headers: {
                     "Authorization": "Bearer GitHub_pat_11BIOFG3I0shEX0XGYgVc4_wa375Y6F4UUKXWoitpdZ6MXUY0iwIF0T1liOdVrhJkjZJTABJVPg3nmQ6qV",
